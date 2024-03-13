@@ -1,5 +1,5 @@
 
-FROM ubuntu:20.04
+FROM ubuntu:24.04
 ENV \
   DEBIAN_FRONTEND=noninteractive \
   LOCALE_INCLUDE="zh_CN zh_HK zh_TW en en_AU fr fr_CA pt pt_BR es ar cs de it ru nl tr is sv uk ja ko th vi"
@@ -10,11 +10,13 @@ ENV \
 # mirrors.aliyun.com
 # mirrors.163.com
 ARG TARGETPLATFORM
-RUN export DOMAIN="mirrors.ustc.edu.cn"; \
+RUN export DOMAIN="mirrors.aliyun.com"; \
   test -z "$(echo $TARGETPLATFORM |grep arm)" && target=ubuntu || target=ubuntu-ports; \
-  echo "deb http://${DOMAIN}/$target focal main restricted universe multiverse" > /etc/apt/sources.list \
-  && echo "deb http://${DOMAIN}/$target focal-updates main restricted universe multiverse">> /etc/apt/sources.list; \
+  codename="nobel"; \
+  sed -i "s/archive.ubuntu.com/${DOMAIN}/g" /etc/apt/sources.list.d/ubuntu.sources; \
+  sed -i "s/security.ubuntu.com/${DOMAIN}/g" /etc/apt/sources.list.d/ubuntu.sources; \
     \
+  cat /etc/apt/sources.list.d/ubuntu.sources; \
   # default:echo -e;
   echo "path-exclude /usr/share/doc/*\n\
 path-exclude /usr/share/man/*\n\
@@ -39,33 +41,33 @@ path-exclude /usr/share/lintian/*\n\
 # RUN \
   # \2487 kB
   apt.sh wget ca-certificates \
-  # \5529 kB 
+  # \5529 kB
   curl lame sox libsox-fmt-mp3 \
   # \4610 kB
-  htop rsync tree tmux lrzsz psmisc fuse net-tools netcat iputils-ping \
+  htop rsync tree tmux lrzsz psmisc fuse net-tools netcat-traditional iputils-ping \
   procps sudo iproute2 iptables zip unzip xz-utils vim-tiny \
   # \2476 kB
-  dropbear-bin dropbear-run openssh-sftp-server lftp jq;
+  dropbear-bin dropbear openssh-sftp-server lftp jq;
 
 # VID, AUD, LOC 87.4 MB
 # 预装软件: geany sakura ristretto sys-monitor engrampa asbru
 # xrdp-chansrv: libfdk-aac1 libopus0
 # strip: binutils
 RUN \
-  # LOCALE 15.0 MB 
+  # LOCALE 15.0 MB
   apt.sh dconf-cli locales tzdata binutils apt-utils fonts-wqy-zenhei \
-  # Audio 39.8 MB 
+  # Audio 39.8 MB
   pulseaudio pavucontrol \
   \
   # 343 kB
   # +xrdp 0.9.12 (compile: 0.9.16/19)
   # supervisor \
-  x11-xkb-utils libfdk-aac1 libopus0 \
+  x11-xkb-utils libfdk-aac2 libopus0 \
   libsecret-1-0 libnss3 libxtst6 libasound2 xdg-utils \
   \
   # APPS 25.7 MB
   # LOC_APPS="tint2 plank thunar sakura" # clipit; +pnmixer: 159 kB; +sv # 7056 kB
-  # LOC_APPS2="gnome-system-monitor engrampa ristretto" # 11.2 MB 
+  # LOC_APPS2="gnome-system-monitor engrampa ristretto" # 11.2 MB
   geany sakura \
   gnome-system-monitor engrampa ristretto \
   \
@@ -74,29 +76,29 @@ RUN \
   xinit xterm fluxbox systemd systemd-sysv; \
   cd /usr/share/fluxbox/nls && rm -rf `ls |grep -v "^C$\|zh_CN"` ; \
   cd /usr/share/fluxbox/styles && rm -rf `ls |grep -v "ubuntu-light"` ; \
-  find /usr/share/fluxbox/; \
-  \
+  find /usr/share/fluxbox/;
+
 # ASBRU: 3586 kB (disk: 15.5 MB)
 # RUN echo 1;\
-  curl -1sLf 'https://dl.cloudsmith.io/public/asbru-cm/release/cfg/setup/bash.deb.sh' | sudo -E bash; \
-  apt.sh asbru-cm; rm -f /etc/apt/sources.list.d/asbru-cm-release.list; \
-  mv /opt/asbru /usr/local; rm -f /usr/bin/asbru-cm; ln -s /usr/local/asbru/asbru-cm /usr/bin/; \
-  cd /usr/share/icons/hicolor/scalable/apps; rm -f asbru-cm.svg; ln -s /usr/local/asbru/res/asbru-logo.svg ./asbru-cm.svg; \
-  dpkg -l |grep asbru && exit 0 || exit 1;  
+## curl -1sLf 'https://dl.cloudsmith.io/public/asbru-cm/release/cfg/setup/bash.deb.sh' | sudo -E bash; \
+## apt.sh asbru-cm; rm -f /etc/apt/sources.list.d/asbru-cm-release.list; \
+## mv /opt/asbru /usr/local; rm -f /usr/bin/asbru-cm; ln -s /usr/local/asbru/asbru-cm /usr/bin/; \
+## cd /usr/share/icons/hicolor/scalable/apps; rm -f asbru-cm.svg; ln -s /usr/local/asbru/res/asbru-logo.svg ./asbru-cm.svg; \
+## dpkg -l |grep asbru && exit 0 || exit 1;
 # go-supervisor
 RUN echo a.1; \
   test -z "$(echo $TARGETPLATFORM |grep arm)" && arch=64-bit || arch=ARM64; \
-  cd /tmp; curl -fSL -O https://ghproxy.com/https://github.com/ochinchina/supervisord/releases/download/v0.7.3/supervisord_0.7.3_Linux_$arch.tar.gz; \
+  cd /tmp; curl -fSL -O https://gh.api.99988866.xyz/https://github.com/ochinchina/supervisord/releases/download/v0.7.3/supervisord_0.7.3_Linux_$arch.tar.gz; \
   tar -zxf supervisord_0.7.3_Linux_$arch.tar.gz; \cp -a supervisord_0.7.3_Linux_$arch/supervisord /usr/local/bin/go-supervisord; \
   rm -rf /tmp/supervisord_0.7.3_Linux*; ls -lh /usr/local/bin/
 
 ARG FULL=""
 # TODO: full瘦身: ibus-rime librime-data-wubi启动时安装;
   # Need to get 71.5 MB of archives. >> layer: 113M
-RUN test -z "$FULL" && exit 0 || echo fullInstall;\  
+RUN test -z "$FULL" && exit 0 || echo fullInstall;\
   # VIDEO: 30.5 MB
-  # libllvm12 已包含 # libgl1-mesa-glx >libgl1-mesa-dri ##ex:  mesa-utils 
-  apt.sh libgl1-mesa-glx mesa-utils libglu1-mesa \
+  # libllvm12 已包含 # libgl1-mesa-glx >libgl1-mesa-dri ##ex:  mesa-utils
+  apt.sh libgl1-mesa-dri libgl1-mesa-dev mesa-utils libglu1-mesa \
   \
   tumbler gtk2-engines-pixbuf gnupg \
   dbus-x11 at-spi2-core language-pack-gnome-zh-hans \
@@ -136,11 +138,15 @@ ENV \
   PORT_SSH=10022 \
   PORT_RDP=10089 \
   PORT_VNC=10081 \
-  # 
+  #
   SSH_PASS=headless \
   VNC_PASS=headless \
   VNC_PASS_RO=View123 \
   VNC_OFFSET=10
+
+ADD --chown=headless:headless src/entry.sh /entry.sh
+
+RUN chmod +x /entry.sh
 
 CMD ["/entry.sh"]
 # 导致提前生成目录?

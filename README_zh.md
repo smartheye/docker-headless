@@ -11,11 +11,13 @@
 
 `docker run -it --rm --shm-size 1g --net=host infrastlabs/docker-headless:latest`
 
- -- | 连接 | 密码 | 只读密码 
+`docker run -ti -e DISPLAY=host.docker.internal:0 -v /tmp/.X11-unix:/tmp/.X11-unix registry-1.docker.io/docker-headless/docker-headless:base-v61`
+
+ -- | 连接 | 密码 | 只读密码
 --- | ---  | ---  | ---
-noVnc | http://192.168.0.x:10081 | `headless` | `View123` 
-RDP   | 192.168.0.x:10089        | `headless` | - 
-SSH   | ssh -p 10022 headless@192.168.0.x | `headless` | - 
+noVnc | http://192.168.0.x:10081 | `headless` | `View123`
+RDP   | 192.168.0.x:10089        | `headless` | -
+SSH   | ssh -p 10022 headless@192.168.0.x | `headless` | -
 
 ![](https://gitee.com/infrastlabs/docker-headless/raw/dev/_doc/res/01rdp-double-screen.png)
 
@@ -49,7 +51,7 @@ docker run -it --rm --net=host --shm-size 1g -e VNC_OFFSET=99 \
 
 ```bash
 # JAVA
-sudo apt -y install openjdk-8-jdk openjdk-8-source && sudo apt -y install maven 
+sudo apt -y install openjdk-8-jdk openjdk-8-source && sudo apt -y install maven
 # GO
 goVer=go1.19.9 #1.19.9:142.16M 1.17.8:129M #go1.16.15 #go1.13.15
 wget https://studygolang.com/dl/golang/$goVer.linux-amd64.tar.gz
