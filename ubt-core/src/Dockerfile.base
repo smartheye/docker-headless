@@ -144,10 +144,6 @@ ENV \
   VNC_PASS_RO=View123 \
   VNC_OFFSET=10
 
-ADD --chown=headless:headless src/entry.sh /entry.sh
-
-RUN chmod +x /entry.sh
-
 CMD ["/entry.sh"]
 # 导致提前生成目录?
 # WORKDIR /home/headless

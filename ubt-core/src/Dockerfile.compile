@@ -1,8 +1,8 @@
 # 2021.5.13 > 22.7.22
 # xrdp-0.9.16 > 0.9.19 (v0.9.16: chansrv_xvnc要求)
 # xorgxrdp-0.2.16 > 0.2.18
-# xrpd> Xvnc (不用xrdpxorg,Xorg); xrdp-chansrv > Xvnc模式: 要求xrdp版本> 0.9.16(deb9为0.9.5, ubt2004为0.9.12, 需编译); 
-FROM ubuntu:20.04 as stage-base
+# xrpd> Xvnc (不用xrdpxorg,Xorg); xrdp-chansrv > Xvnc模式: 要求xrdp版本> 0.9.16(deb9为0.9.5, ubt2004为0.9.12, 需编译);
+FROM ubuntu:24.04 as stage-base
 ENV DEBIAN_FRONTEND noninteractive
 # mirrors.tuna.tsinghua.edu.cn
 # mirrors.ustc.edu.cn
@@ -10,11 +10,12 @@ ENV DEBIAN_FRONTEND noninteractive
 # mirrors.163.com
 ARG TARGETPLATFORM
 ARG BUILDPLATFORM
-RUN export DOMAIN="mirrors.ustc.edu.cn"; \
+RUN export DOMAIN="mirrors.aliyun.com"; \
   test -z "$(echo $TARGETPLATFORM |grep arm)" && target=ubuntu || target=ubuntu-ports; \
-  echo "deb http://${DOMAIN}/$target focal main restricted universe multiverse" > /etc/apt/sources.list \
-  && echo "deb http://${DOMAIN}/$target focal-updates main restricted universe multiverse">> /etc/apt/sources.list; \
-  \
+  codename="nobel"; \
+  sed -i "s/archive.ubuntu.com/${DOMAIN}/g" /etc/apt/sources.list.d/ubuntu.sources; \
+  sed -i "s/security.ubuntu.com/${DOMAIN}/g" /etc/apt/sources.list.d/ubuntu.sources; \
+    \
   echo 'apt update -qq && apt install -yq --no-install-recommends $@ && apt clean && rm -rf /var/lib/apt/lists/*; ' > /usr/local/bin/apt.sh \
     && chmod +x /usr/local/bin/apt.sh
 
@@ -39,7 +40,7 @@ RUN apt.sh \
     intltool xsltproc xutils-dev python-libxml2 g++ xutils libfuse-dev \
     libmp3lame-dev nasm libpixman-1-dev xserver-xorg-dev
 RUN apt.sh \
-  libfdk-aac-dev libopus-dev
+  libfdk-aac2-dev libopus-dev
 #0.9.5 > 0.9.16 > 0.9.19(thunar@gemmi-deb11卡死)
 ENV ver="0.9.16"
 # https://hub.fastgit.org/neutrinolabs/xrdp/wiki/Building-on-Debian-8
@@ -118,8 +119,8 @@ RUN export domain="mirrors.ustc.edu.cn"; \
 RUN apt update; \
   # 25.6M
   apt install -y --no-install-recommends ca-certificates fakeroot devscripts devscripts binutils wget; \
-  # 129 MB 
-  apt build-dep -y tigervnc 
+  # 129 MB
+  apt build-dep -y tigervnc
 
 
 # SRC
@@ -133,7 +134,7 @@ RUN mkdir -p /build; \
   ls /build/tigervnc-1.12.0/unix/xserver/
 
 # apply patch: tigervnc-1.12.0; xserver120
-WORKDIR /build/tigervnc-1.12.0 
+WORKDIR /build/tigervnc-1.12.0
 
 #MAKE vncviewver, vncpasswd, vncconfig, ...
 # err with armv7:
@@ -161,7 +162,7 @@ RUN autoreconf -fiv; \
       --enable-dri3      --enable-dri2                  \
       --with-pic \
       --without-dtrace;                              \
-      make && make install; 
+      make && make install;
 # vncpasswd
 RUN cp /build/tigervnc-1.12.0/unix/vncpasswd/vncpasswd /usr/local/tigervnc/bin/
 # https://github.com/TigerVNC/tigervnc/issues/800
