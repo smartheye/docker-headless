@@ -22,7 +22,7 @@ compile)
     # TigerVNC 1.12.0 |10 Nov 2021
     old=$(pwd); cd src/arm
     # xrdp
-    ver="0.9.25"
+    ver="0.9.25.1"
     file=xrdp-${ver}.tar.gz; test -s $file || curl -k -O -fSL https://github.com/neutrinolabs/xrdp/releases/download/v${ver}/$file
     # tiger
     file=xorg-server-21.1.11.tar.gz; test -s $file || curl -k -O -fSL https://www.x.org/pub/individual/xserver/$file #6.1M
@@ -31,8 +31,10 @@ compile)
     cd $old;
     #
     img="docker-headless:core-compile"
-    plat="--platform linux/amd64,linux/arm64" #,linux/arm
+    #plat="--platform linux/amd64,linux/arm64" #,linux/arm
+    plat="--platform linux/amd64"
     # --network=host: docker buildx create --use --name mybuilder2 --buildkitd-flags '--allow-insecure-entitlement network.host'
+    echo "docker buildx build $plat $push -t $ns/$img -f src/Dockerfile.compile ."
     docker buildx build $plat $push -t $ns/$img -f src/Dockerfile.compile .
     ;;
 
