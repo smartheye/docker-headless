@@ -1,4 +1,17 @@
 
+## Distros
+
+- musl
+  - [nil-busybox](https://www.busybox.net/) `Replace of GNU Coreutils`
+  - [**apk-alpine**](https://alpinelinux.org/releases/) `LTS:the last 4 version, Norway`
+  - [opkg-openwrt](https://openwrt.org/zh/about/history) `Embedded Device`
+- deb
+  - [apt-debian](https://wiki.debian.org/LTS) `2Years, LTS 5Years, Global`
+  - [**apt-ubuntu**](https://ubuntu.com/about/release-cycle) `2Years, LTS 10Years, Isle of Man`
+- rpm
+  - [yum-fedora](https://distrowatch.com/table.php?distribution=fedora) `0.5Year, USA`
+  - [**zyp-opensuse**](https://en.opensuse.org/Portal:Leap) `3Years, Germany`
+
 ## Desktop
 
 **Alpine319**
