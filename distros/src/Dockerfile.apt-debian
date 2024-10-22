@@ -188,7 +188,7 @@ RUN test "app" != "$TYPE" && exit 0 || echo appInstall;\
   # ln -s /usr/bin/thunar /usr/bin/pcmanfm; \
   mv /usr/bin/st /usr/bin/st00; ln -s /usr/bin/sakura /usr/bin/st; \
   test "14.04" == "${VER}" && exit 0; \
-  apt.sh pnmixer plank engrampa; \
+  apt.sh pasystray xrandr plank engrampa; \
   exit 0
 
   # # wps: libxss1

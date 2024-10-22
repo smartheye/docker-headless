@@ -137,16 +137,17 @@ RUN test "app" != "$TYPE" && exit 0 || echo appInstall;\
 # Apps2
 # lxtask: none
 # sakura #@3.19
+# plank #none
+# rofi clipit pnmixer lxappearance \ #@3.19
+# thunar tint2
 # v3.13: +rofi clipit pnmixer lxappearance
+# pnmixer> pasystray
 RUN test "app" != "$TYPE" && exit 0 || echo appInstall;\
-  test "3.13" == "${VER}" && apk add --no-cache rofi clipit pnmixer lxappearance; \
-  test "3.19" == "${VER}" && apk add --no-cache sakura rofi clipit pnmixer lxappearance; \
+  test "3.13" == "${VER}" && apk add --no-cache rofi clipit pasystray xrandr lxappearance; \
+  test "3.19" == "${VER}" && apk add --no-cache sakura rofi clipit pasystray xrandr lxappearance; \
   exit 0;
 
 # XFCE4
-  # plank #none
-  # rofi clipit pnmixer lxappearance \ #@3.19
-  # thunar tint2
   # xfdesktop4 > xfdesktop @alpine3.19
   # v3.1: xfwm4 (4.10.1-r0)
   # v3.2: xfwm4 (4.12.3-r0)

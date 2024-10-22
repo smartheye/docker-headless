@@ -91,15 +91,15 @@ RUN test "app" != "$TYPE" && exit 0 || echo appInstall;\
 
 # sakura+
 # zyp-ex: clipit pnmixer 
+# plank rofi clipit pnmixer lxappearance thunar \
+# tint2
 RUN test "app" != "$TYPE" && exit 0 || echo appInstall;\
-  zyp.sh pavucontrol \
+  zyp.sh pavucontrol pasystray xrandr \
   ibus ibus-rime flameshot \
   sakura thunar lxappearance   geany ristretto engrampa gnome-system-monitor; \
   exit 0
 
 # XFCE4
-  # plank rofi clipit pnmixer lxappearance thunar \
-  # tint2
   # xfdesktop4 > xfdesktop @opsuse15.5
 RUN test "app" != "$TYPE" && exit 0 || echo appInstall;\
   # 2536 kB #18.9 MB > 14.3 MB
